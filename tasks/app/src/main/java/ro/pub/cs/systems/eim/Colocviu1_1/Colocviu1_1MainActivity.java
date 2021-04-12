@@ -2,6 +2,7 @@ package ro.pub.cs.systems.eim.Colocviu1_1;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -66,6 +67,14 @@ public class Colocviu1_1MainActivity extends AppCompatActivity {
             stringText.setText(stringText.getText().toString() + ((Button)view).getText().toString() + ", ");
             pressCount += 1;
             Log.d(Constants.TAG, pressCount.toString());
+
+            if (pressCount == 4) {
+                Log.d(Constants.TAG, "Reached 4 directions!");
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName("ro.pub.cs.systems.eim.Colocviu1_1", "ro.pub.cs.systems.eim.Colocviu1_1.service.Colocviu1_1Service"));
+                intent.putExtra("ro.pub.cs.systems.eim.Colocviu1_1.BROADCAST_MSG", stringText.getText());
+                startService(intent);
+            }
         }
     }
 
@@ -80,7 +89,15 @@ public class Colocviu1_1MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, intent);
         String result = intent.getStringExtra("ro.pub.cs.systems.eim.Colocviu1_1.MY_RETURN_KEY");
 
-
         Toast.makeText(this, result, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onDestroy() {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName("ro.pub.cs.systems.eim.Colocviu1_1", "ro.pub.cs.systems.eim.Colocviu1_1.service.Colocviu1_1Service"));
+        stopService(intent);
+
+        super.onDestroy();
     }
 }
