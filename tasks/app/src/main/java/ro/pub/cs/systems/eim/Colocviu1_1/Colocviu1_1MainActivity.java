@@ -2,11 +2,13 @@ package ro.pub.cs.systems.eim.Colocviu1_1;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Colocviu1_1MainActivity extends AppCompatActivity {
 
@@ -35,8 +37,25 @@ public class Colocviu1_1MainActivity extends AppCompatActivity {
         stringText = (TextView)findViewById(R.id.textPressed);
 
         for (int index = 0; index < Constants.buttonIds.length; index++) {
-            buttonCardinalDirection = (Button) findViewById(Constants.buttonIds[index]);
+            buttonCardinalDirection = (Button)findViewById(Constants.buttonIds[index]);
             buttonCardinalDirection.setOnClickListener(genericButtonClickListener);
+        }
+
+        buttonNavigate = (Button)findViewById(R.id.navigate);
+        buttonNavigate.setOnClickListener(navigateButtonClickListener);
+    }
+
+    private NavigateButtonClickListener navigateButtonClickListener = new NavigateButtonClickListener();
+    private class NavigateButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            String instructions = stringText.getText().toString();
+            Intent intent = new Intent("ro.pub.cs.systems.eim.Colocviu1_1.intent.action.Colocviu1_1SecondaryActivity");
+            intent.putExtra("ro.pub.cs.systems.eim.Colocviu1_1.MY_STRING_KEY", instructions);
+            startActivityForResult(intent, Constants.MAIN_REQUEST_CODE);
+
+            pressCount = 0;
+            stringText.setText("");
         }
     }
 
@@ -54,5 +73,14 @@ public class Colocviu1_1MainActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putInt(Constants.PRESS_COUNT, pressCount);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        String result = intent.getStringExtra("ro.pub.cs.systems.eim.Colocviu1_1.MY_RETURN_KEY");
+
+
+        Toast.makeText(this, result, Toast.LENGTH_LONG).show();
     }
 }
